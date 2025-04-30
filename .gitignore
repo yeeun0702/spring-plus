@@ -38,3 +38,8 @@ out/
 
 ### properties ###
 *.properties
+
+# yml
+application.yml
+application-prod.yml
+.resources/
