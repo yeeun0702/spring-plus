@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
+
 @Service
 @RequiredArgsConstructor
 public class TodoService {
@@ -47,7 +49,7 @@ public class TodoService {
         );
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly=true, propagation=SUPPORTS)
     public Page<TodoResponse> getTodos(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
@@ -64,7 +66,7 @@ public class TodoService {
         ));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly=true, propagation=SUPPORTS)
     public TodoResponse getTodo(long todoId) {
         Todo todo = todoRepository.findByIdWithUser(todoId)
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
