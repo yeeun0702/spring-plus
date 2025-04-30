@@ -1,6 +1,8 @@
 package org.example.expert.domain.user.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
@@ -9,12 +11,16 @@ import org.example.expert.domain.user.enums.UserRole;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class User extends Timestamped {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String nickname;
+
     @Column(unique = true)
     private String email;
     private String password;
