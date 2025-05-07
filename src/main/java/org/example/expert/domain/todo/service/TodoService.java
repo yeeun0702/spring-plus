@@ -5,8 +5,10 @@ import org.example.expert.client.WeatherClient;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.todo.dto.request.TodoSaveRequest;
+import org.example.expert.domain.todo.dto.request.TodoSearchRequest;
 import org.example.expert.domain.todo.dto.response.TodoResponse;
 import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
+import org.example.expert.domain.todo.dto.response.TodoSearchResponse;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
 import org.example.expert.domain.user.dto.response.UserResponse;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.springframework.transaction.annotation.Propagation.SUPPORTS;
@@ -52,7 +55,7 @@ public class TodoService {
     }
 
     @Transactional(readOnly = true, propagation = SUPPORTS)
-    public Page<TodoResponse> searchTodos(String weather, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
+    public Page<TodoResponse> getTodos(String weather, LocalDateTime startDate, LocalDateTime endDate, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
         return todoRepository.searchTodosWithConditions(weather, startDate, endDate, pageable)
@@ -85,4 +88,10 @@ public class TodoService {
                 todo.getModifiedAt()
         );
     }
+
+    @Transactional(readOnly = true)
+    public Page<TodoSearchResponse> searchTodos(TodoSearchRequest todoSearchRequest, Pageable pageable) {
+        return todoRepository.searchTodos(todoSearchRequest, pageable);
+    }
+
 }
