@@ -3,6 +3,10 @@ package org.example.expert.domain.manager.service;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
+import org.example.expert.domain.log.entity.Log;
+import org.example.expert.domain.log.enums.LogStatus;
+import org.example.expert.domain.log.service.LogService;
+import org.example.expert.domain.manager.dto.request.ManagerRequest;
 import org.example.expert.domain.manager.dto.request.ManagerSaveRequest;
 import org.example.expert.domain.manager.dto.response.ManagerResponse;
 import org.example.expert.domain.manager.dto.response.ManagerSaveResponse;
@@ -28,6 +32,7 @@ public class ManagerService {
     private final ManagerRepository managerRepository;
     private final UserRepository userRepository;
     private final TodoRepository todoRepository;
+    private final LogService logService;
 
     @Transactional
     public ManagerSaveResponse saveManager(AuthUser authUser, long todoId, ManagerSaveRequest managerSaveRequest) {
@@ -92,5 +97,36 @@ public class ManagerService {
         }
 
         managerRepository.delete(manager);
+    }
+
+    @Transactional
+    public void registerManager(ManagerRequest managerRequest) {
+
+        // 로그 시작
+        Log log = logService.startLog("매니저 등록 요청 - userId: " + managerRequest.getUserId() +
+                ", todoId: " + managerRequest.getTodoId());
+
+        boolean success = false;  // 성공 여부 추적
+
+        try {
+            User user = userRepository.findById(managerRequest.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            Todo todo = todoRepository.findById(managerRequest.getTodoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Todo not found"));
+
+            Manager manager = Manager.builder()
+                    .user(user)
+                    .todo(todo)
+                    .build();
+            managerRepository.save(manager);
+
+            success = true;  // 성공했으면 true
+
+        } finally {
+            // 트랜잭션은 실패해도 로그는 REQUIRES_NEW로 커밋
+            LogStatus status = success ? LogStatus.SUCCESS : LogStatus.FAIL;
+            logService.updateLogStatus(log.getId(), status);
+        }
     }
 }
