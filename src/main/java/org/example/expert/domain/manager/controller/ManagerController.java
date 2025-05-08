@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.common.annotation.Auth;
 import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.domain.manager.dto.request.ManagerRequest;
 import org.example.expert.domain.manager.dto.request.ManagerSaveRequest;
 import org.example.expert.domain.manager.dto.response.ManagerResponse;
 import org.example.expert.domain.manager.dto.response.ManagerSaveResponse;
@@ -41,4 +42,11 @@ public class ManagerController {
     ) {
         managerService.deleteManager(authUser, todoId, managerId);
     }
+
+    @PostMapping("/managers")
+    public ResponseEntity<Void> registerManager(@RequestBody ManagerRequest managerRequest) {
+        managerService.registerManager(managerRequest);
+        return ResponseEntity.ok().build();
+    }
+
 }
