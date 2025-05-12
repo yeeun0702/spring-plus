@@ -10,4 +10,5 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
     volumes:
       - ./application-prod.yml:/app/application-prod.yml
+    command: ["java", "-jar", "/app/app.jar", "--spring.config.additional-location=file:/app/application-prod.yml"]
     restart: always
