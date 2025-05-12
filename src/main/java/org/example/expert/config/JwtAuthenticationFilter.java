@@ -35,7 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String url = request.getRequestURI();
 
-        if (url.startsWith("/auth")) {
+        // 인증 제외 대상은 바로 통과
+        if (url.startsWith("/auth") || url.equals("/health") || url.startsWith("/h2-console")) {
             filterChain.doFilter(request, response);
             return;
         }

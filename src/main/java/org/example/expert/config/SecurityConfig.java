@@ -33,6 +33,7 @@ public class SecurityConfig {
                 // 인증/인가 설정
                 .authorizeHttpRequests(authorize -> authorize
                         // 인증이 필요없는 공개 API
+                        .requestMatchers("/health").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         // 특정 권한이 필요한 API
