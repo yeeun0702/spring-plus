@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    image: yeeun0702/spring-plus:latest
+    container_name: spring-plus
+    ports:
+      - "80:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    volumes:
+      - ./application-prod.yml:/app/application-prod.yml
+    restart: always
